@@ -1,6 +1,8 @@
 from datetime import date
 from datetime import datetime
 
+import re
+
 
 def get_class(test_passed, test_failed, build_passed):
 	if (build_passed == 'failed' or build_passed == 'errored'):
@@ -143,8 +145,17 @@ def normalize_data():
 		line_count +=1
 
 
+def create_files():
+	string = "d0.csv"
+	p = re.compile("\d")
+	for i in range(11):
+		open(string, 'a').close()
+		string = p.sub(str(i), string)
+	open("output.csv", 'a').close()
+
 
 def main():
+	create_files()
 	get_data()
 	normalize_data()
 
