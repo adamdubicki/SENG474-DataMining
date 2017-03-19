@@ -35,6 +35,7 @@ def transform_data(line):
 			transformation.append(0)
 			transformation.append(1)
 
+
 		# We can just straight up add all of the pure attributes
 		# (2 -> 16) - 3
 		for i in pure_attributes:
@@ -67,6 +68,7 @@ def get_data():
 	f2 = open("output.csv", 'w')
 	line = f.readline()
 	count = 0
+	print (line)
 	startTime = time.time()
 	print(": : : EXTRACTING DATA : : :")
 	# Grab all of the attributes we want
@@ -89,6 +91,7 @@ def normalize_data():
 	startTime = time.time()
 	negative_count = 0
 	positive_count = 0
+	print(line)
 	print(": : : NORMALIZING DATA : : :")
 
 	# Max at 0, Min at 1, Total at 2
@@ -185,7 +188,6 @@ def isfloat(value):
 	except ValueError:
 		return False
 
-#
 # def get_data_with_nulls():
 # 	f = open("data_synth.csv")
 # 	f2 = open("output.csv", 'w')
@@ -303,9 +305,7 @@ def isfloat(value):
 # Grab all of the attributes we want
 def main():
 	# create_files()
-	# get_data()
+	get_data()
 	normalize_data()
-	# get_data_with_nulls()
-
 
 main()
