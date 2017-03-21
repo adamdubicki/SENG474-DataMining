@@ -43,23 +43,39 @@ def get_roc(test_data, w):
 	plt.plot(-1 * np.ones(failing_builds.shape[0]), failing_builds, 'b')
 	# plt.show()
 	most_accurate = [0, 2]
-	print("[")
+
+	ac = np.array([])
 	for thresh in np.linspace(0, 1, 101):
 		true_positives = sum(i > thresh for i in good_builds)
 		false_negatives = good_builds.shape[0] - true_positives
 		true_negatives = sum(i <= thresh for i in failing_builds)
 		false_positives = failing_builds.shape[0] - true_negatives
 		accuracy = float(true_negatives + true_positives) / float(
-			(good_builds.shape[0] + failing_builds.shape[0])) * 100.0
-		print(accuracy,true_positives,true_negatives,false_positives,false_negatives,thresh)
+			(good_builds.shape[0] + failing_builds.shape[0]))
+		ac = np.append(ac, [accuracy])
+
+	# for thresh in np.linspace(0, 1, 101):
+	# 	true_positives = sum(i > thresh for i in good_builds)
+	# 	false_negatives = good_builds.shape[0] - true_positives
+	# 	true_negatives = sum(i <= thresh for i in failing_builds)
+	# 	false_positives = failing_builds.shape[0] - true_negatives
+	# 	accuracy = float(true_negatives + true_positives) / float(
+	# 		(good_builds.shape[0] + failing_builds.shape[0])) * 100.0
+	# 	print(float(false_positives) / float(true_negatives + false_positives))
+	print("true negatives", true_negatives, "false negatives", false_negatives)
+	print("false positives", false_positives, "true positives", true_positives)
+	print("[")
+	for i in ac:
+		print(str(i) + ",")
 	print("]")
+	return ac
 
 
 def train_classifier(training_data):
 	kappa = 1.0
 	w = np.zeros(20)
 
-	for i in range(0, 10):
+	for i in range(0, 30):
 		for t in training_data:
 			data = np.genfromtxt(t, delimiter=',')
 			num_attributes = (data[0].shape[0] - 1)
@@ -74,12 +90,21 @@ def train_classifier(training_data):
 
 def main():
 	data = (['d0.csv', 'd1.csv', 'd2.csv', 'd3.csv', 'd4.csv', 'd5.csv', 'd6.csv', 'd7.csv', 'd8.csv', 'd9.csv'])
+	# data = (['d0.csv'])
 	sys.stdout = open('roc.csv', 'w')
+	avg_w = np.zeros(20)
+	ac = np.zeros(101)
 	for d in data:
 		print("TESTING", d)
 		test_data = list(set(data) - set(d))
 		w = train_classifier(test_data)
-		get_roc(d, w)
+		avg_w += w
+		ac += get_roc(d, w)
+	print(avg_w / 10)
+	ac = ac / 10
+	for i in ac:
+		print(str(i) + ",")
+	print("]")
 
 
 main()

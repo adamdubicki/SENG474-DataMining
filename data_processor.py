@@ -68,7 +68,7 @@ def get_data():
 	f2 = open("output.csv", 'w')
 	line = f.readline()
 	count = 0
-	print (line)
+	print (line.split(','))
 	startTime = time.time()
 	print(": : : EXTRACTING DATA : : :")
 	# Grab all of the attributes we want
@@ -110,6 +110,7 @@ def normalize_data():
 			if (float(line[attribute]) < normalization_data[attribute][1]):
 				normalization_data[attribute][1] = float(line[attribute])
 	print ("NORMALIZED ATTRIBUTE DATA", normalization_data)
+	print(count)
 	f = open("output.csv")
 	f0 = open("d0.csv", 'w')
 	f1 = open("d1.csv", 'w')
@@ -135,9 +136,13 @@ def normalize_data():
 		line[2] = float(line[2])
 		line[18] = float(line[18])
 		line[19] = float(line[19])
-		if (tuple(line) in line_made):
-			pass
-		if(negative_count > positive_count and line[19]==-1):
+		# if (tuple(line) in line_made):
+		# 	pass
+		# if(negative_count > positive_count and line[19]==-1):
+		# 	pass
+		# if(positive_count > negative_count and line[19]==1):
+		# 	pass
+		if(False):
 			pass
 		else:
 			if((line[19] == -1)):
@@ -145,25 +150,25 @@ def normalize_data():
 			else:
 				positive_count += 1
 			line_made[tuple(line)] = 1
-			if (line_count % 10 == 0):
+			if ((negative_count < 5000 and line[19] == -1) or (positive_count < 5000 and line[19] == 1)):
 				f0.write(str(line).strip('[,]') + "\n")
-			elif (line_count % 10 == 1):
+			elif ((negative_count < 10000 and line[19] == -1) or (positive_count < 10000 and line[19] == 1)):
 				f1.write(str(line).strip('[,]') + "\n")
-			elif (line_count % 10 == 2):
+			elif ((negative_count < 15000 and line[19] == -1) or (positive_count < 15000 and line[19] == 1)):
 				f2.write(str(line).strip('[,]') + "\n")
-			elif (line_count % 10 == 3):
+			elif ((negative_count < 20000 and line[19] == -1) or (positive_count < 20000 and line[19] == 1)):
 				f3.write(str(line).strip('[,]') + "\n")
-			elif (line_count % 10 == 4):
+			elif ((negative_count < 25000 and line[19] == -1) or (positive_count < 25000 and line[19] == 1)):
 				f4.write(str(line).strip('[,]') + "\n")
-			elif (line_count % 10 == 5):
+			elif ((negative_count < 30000 and line[19] == -1) or (positive_count < 30000 and line[19] == 1)):
 				f5.write(str(line).strip('[,]') + "\n")
-			elif (line_count % 10 == 6):
+			elif ((negative_count < 35000 and line[19] == -1) or (positive_count < 35000 and line[19] == 1)):
 				f6.write(str(line).strip('[,]') + "\n")
-			elif (line_count % 10 == 7):
+			elif ((negative_count < 45000 and line[19] == -1) or (positive_count < 45000 and line[19] == 1)):
 				f7.write(str(line).strip('[,]') + "\n")
-			elif (line_count % 10 == 8):
+			elif ((negative_count < 50000 and line[19] == -1) or (positive_count < 50000 and line[19] == 1)):
 				f8.write(str(line).strip('[,]') + "\n")
-			elif (line_count % 10 == 9):
+			elif ((negative_count < 55000 and line[19] == -1) or (positive_count < 55000 and line[19] == 1)):
 				f9.write(str(line).strip('[,]') + "\n")
 			line_count += 1
 	print("POSITIVES",positive_count)
@@ -188,124 +193,125 @@ def isfloat(value):
 	except ValueError:
 		return False
 
-# def get_data_with_nulls():
-# 	f = open("data_synth.csv")
-# 	f2 = open("output.csv", 'w')
-# 	line = f.readline()
-# 	print(line)
-# 	count = 0
-# 	startTime = time.time()
-#
-# 	normalized = range(1, 7)
-# 	normalized_attributes = {}
-# 	for i in normalized:
-# 		normalized_attributes[i] = {'max': 0.0, 'min': 99999, 'sum': 0.0, 'not_null': 0.0}
-# 	print(": : : EXTRACTING DATA : : :")
-#
-# 	for line in f:
-# 		line = line.strip('\r\n').split(',')
-# 		count += 1
-# 		for attribute in normalized:
-# 			if (line[attribute]) == 'NA' or line[attribute] == '':
-# 				continue
-# 			else:
-# 				if (attribute not in [5, 6]):
-# 					if float(line[attribute]) > normalized_attributes[attribute]['max']:
-# 						normalized_attributes[attribute]['max'] = float(line[attribute])
-# 					if float(line[attribute]) < normalized_attributes[attribute]['min']:
-# 						normalized_attributes[attribute]['min'] = float(line[attribute])
-# 					normalized_attributes[attribute]['sum'] += float(line[attribute])
-# 					normalized_attributes[attribute]['not_null'] += 1
-# 				if (attribute == 5):
-# 					if (line[attribute] == 'TRUE'):
-# 						normalized_attributes[attribute]['sum'] += 1
-# 					normalized_attributes[attribute]['not_null'] += 1
-# 				if (attribute == 6):
-# 					if (line[attribute] == 'passed'):
-# 						normalized_attributes[attribute]['sum'] += 1
-# 					normalized_attributes[attribute]['not_null'] += 1
-#
-# 	f = open("data_synth.csv")
-# 	f0 = open("d0.csv", 'w')
-# 	f1 = open("d1.csv", 'w')
-# 	f2 = open("d2.csv", 'w')
-# 	f3 = open("d3.csv", 'w')
-# 	f4 = open("d4.csv", 'w')
-# 	f5 = open("d5.csv", 'w')
-# 	f6 = open("d6.csv", 'w')
-# 	f7 = open("d7.csv", 'w')
-# 	f8 = open("d8.csv", 'w')
-# 	f9 = open("d9.csv", 'w')
-# 	line = f.readline()
-# 	line_count = 0
-# 	line_made = {}
-# 	for line in f:
-# 		new_line = []
-# 		line = line.strip('\r\n').split(',')
-# 		if (line[0] == 'ruby'):
-# 			new_line.append(1)
-# 			new_line.append(0)
-# 			new_line.append(0)
-# 		elif (line[0] == 'java'):
-# 			new_line.append(0)
-# 			new_line.append(1)
-# 			new_line.append(0)
-# 		else:
-# 			new_line.append(0)
-# 			new_line.append(0)
-# 			new_line.append(1)
-# 		for i in range(1, 5):
-# 			new_val = line[i]
-# 			avg = float(normalized_attributes[i]['sum'] / normalized_attributes[i]['not_null'])
-# 			data_range = float(normalized_attributes[i]['max'] - normalized_attributes[i]['min'])
-# 			if (new_val == 'NA' or new_val == '' or not isfloat(new_val)):
-# 				new_line.append(0.0)
-# 			else:
-# 				new_line.append((float(new_val) - avg) / float(data_range))
-# 		if (line[5] == 'TRUE'):
-# 			new_line.append(1.0)
-# 		else:
-# 			new_line.append(0)
-# 		if (line[6] == "passed"):
-# 			new_line.append(1.0)
-# 		else:
-# 			new_line.append(-1.0)
-#
-# 		# if(tuple(new_line) in line_made):
-# 		# 	pass
-# 		# else:
-# 		# 	line_made[tuple(new_line)] = 1
-# 		if (line_count % 10 == 0):
-# 			f0.write(str(new_line).strip('[,]') + "\n")
-# 		elif (line_count % 10 == 1):
-# 			f1.write(str(new_line).strip('[,]') + "\n")
-# 		elif (line_count % 10 == 2):
-# 			f2.write(str(new_line).strip('[,]') + "\n")
-# 		elif (line_count % 10 == 3):
-# 			f3.write(str(new_line).strip('[,]') + "\n")
-# 		elif (line_count % 10 == 4):
-# 			f4.write(str(new_line).strip('[,]') + "\n")
-# 		elif (line_count % 10 == 5):
-# 			f5.write(str(new_line).strip('[,]') + "\n")
-# 		elif (line_count % 10 == 6):
-# 			f6.write(str(new_line).strip('[,]') + "\n")
-# 		elif (line_count % 10 == 7):
-# 			f7.write(str(new_line).strip('[,]') + "\n")
-# 		elif (line_count % 10 == 8):
-# 			f8.write(str(new_line).strip('[,]') + "\n")
-# 		elif (line_count % 10 == 9):
-# 			f9.write(str(new_line).strip('[,]') + "\n")
-# 		line_count += 1
-# 		print line_count
-# 	print (normalized_attributes)
-# 	print(": : : FINISHED NORMALIZING : : :")
-# 	print("TIME: ", time.time() - startTime)
+def get_data_with_nulls():
+	f = open("data_synth.csv")
+	f2 = open("output.csv", 'w')
+	line = f.readline()
+	print(line)
+	count = 0
+	startTime = time.time()
+
+	normalized = range(1, 7)
+	normalized_attributes = {}
+	for i in normalized:
+		normalized_attributes[i] = {'max': 0.0, 'min': 99999, 'sum': 0.0, 'not_null': 0.0}
+	print(": : : EXTRACTING DATA : : :")
+
+	for line in f:
+		line = line.strip('\r\n').split(',')
+		count += 1
+		for attribute in normalized:
+			if (line[attribute]) == 'NA' or line[attribute] == '':
+				continue
+			else:
+				if (attribute not in [5, 6]):
+					if float(line[attribute]) > normalized_attributes[attribute]['max']:
+						normalized_attributes[attribute]['max'] = float(line[attribute])
+					if float(line[attribute]) < normalized_attributes[attribute]['min']:
+						normalized_attributes[attribute]['min'] = float(line[attribute])
+					normalized_attributes[attribute]['sum'] += float(line[attribute])
+					normalized_attributes[attribute]['not_null'] += 1
+				if (attribute == 5):
+					if (line[attribute] == 'TRUE'):
+						normalized_attributes[attribute]['sum'] += 1
+					normalized_attributes[attribute]['not_null'] += 1
+				if (attribute == 6):
+					if (line[attribute] == 'passed'):
+						normalized_attributes[attribute]['sum'] += 1
+					normalized_attributes[attribute]['not_null'] += 1
+
+	f = open("data_synth.csv")
+	f0 = open("d0.csv", 'w')
+	f1 = open("d1.csv", 'w')
+	f2 = open("d2.csv", 'w')
+	f3 = open("d3.csv", 'w')
+	f4 = open("d4.csv", 'w')
+	f5 = open("d5.csv", 'w')
+	f6 = open("d6.csv", 'w')
+	f7 = open("d7.csv", 'w')
+	f8 = open("d8.csv", 'w')
+	f9 = open("d9.csv", 'w')
+	line = f.readline()
+	line_count = 0
+	line_made = {}
+	for line in f:
+		new_line = []
+		line = line.strip('\r\n').split(',')
+		if (line[0] == 'ruby'):
+			new_line.append(1)
+			new_line.append(0)
+			new_line.append(0)
+		elif (line[0] == 'java'):
+			new_line.append(0)
+			new_line.append(1)
+			new_line.append(0)
+		else:
+			new_line.append(0)
+			new_line.append(0)
+			new_line.append(1)
+		for i in range(1, 5):
+			new_val = line[i]
+			avg = float(normalized_attributes[i]['sum'] / normalized_attributes[i]['not_null'])
+			data_range = float(normalized_attributes[i]['max'] - normalized_attributes[i]['min'])
+			if (new_val == 'NA' or new_val == '' or not isfloat(new_val)):
+				new_line.append(0.0)
+			else:
+				new_line.append((float(new_val) - avg) / float(data_range))
+		if (line[5] == 'TRUE'):
+			new_line.append(1.0)
+		else:
+			new_line.append(0)
+		if (line[6] == "passed"):
+			new_line.append(1.0)
+		else:
+			new_line.append(-1.0)
+
+		# if(tuple(new_line) in line_made):
+		# 	pass
+		# else:
+		# 	line_made[tuple(new_line)] = 1
+		if (line_count % 10 == 0):
+			f0.write(str(new_line).strip('[,]') + "\n")
+		elif (line_count % 10 == 1):
+			f1.write(str(new_line).strip('[,]') + "\n")
+		elif (line_count % 10 == 2):
+			f2.write(str(new_line).strip('[,]') + "\n")
+		elif (line_count % 10 == 3):
+			f3.write(str(new_line).strip('[,]') + "\n")
+		elif (line_count % 10 == 4):
+			f4.write(str(new_line).strip('[,]') + "\n")
+		elif (line_count % 10 == 5):
+			f5.write(str(new_line).strip('[,]') + "\n")
+		elif (line_count % 10 == 6):
+			f6.write(str(new_line).strip('[,]') + "\n")
+		elif (line_count % 10 == 7):
+			f7.write(str(new_line).strip('[,]') + "\n")
+		elif (line_count % 10 == 8):
+			f8.write(str(new_line).strip('[,]') + "\n")
+		elif (line_count % 10 == 9):
+			f9.write(str(new_line).strip('[,]') + "\n")
+		line_count += 1
+		print line_count
+	print (normalized_attributes)
+	print(": : : FINISHED NORMALIZING : : :")
+	print("TIME: ", time.time() - startTime)
 
 
 # Grab all of the attributes we want
 def main():
 	# create_files()
-	get_data()
+	# get_data()
 	normalize_data()
+	# get_data_with_nulls()
 
 main()
