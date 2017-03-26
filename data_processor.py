@@ -2,21 +2,14 @@ from datetime import date
 from datetime import datetime
 import time
 import re
+import numpy as np
 
 
-def get_class(test_passed, test_failed, build_passed):
+def get_class(build_passed):
 	if (build_passed == 'failed' or build_passed == 'errored'):
-		return -1
+		return 1
 	else:
-		test_passed = float(test_passed)
-		total_tests = float(test_failed) + test_passed
-		if (total_tests == 0.0):
-			return 1
-		else:
-			if (float(test_passed / total_tests) >= 0.95):
-				return 1
-			else:
-				return -1
+		return -1
 
 
 def transform_data(line):
@@ -53,7 +46,7 @@ def transform_data(line):
 		first_commit = datetime.strptime(line[3], date_format)
 		build_at = datetime.strptime(line[18], date_format)
 		delta = build_at - first_commit
-		if(delta.days < 0):
+		if (delta.days < 0):
 			transformation.append(0)
 		else:
 			transformation.append(delta.days)
@@ -65,7 +58,7 @@ def transform_data(line):
 			transformation.append(-1)
 
 		# Get the class from the build status and tests
-		transform_class = get_class(line[20], line[21], line[19])
+		transform_class = get_class(line[20])
 		transformation.append(transform_class)
 
 		return transformation
@@ -76,6 +69,7 @@ def get_data():
 	f2 = open("output.csv", 'w')
 	line = f.readline()
 	count = 0
+	print (line.split(','))
 	startTime = time.time()
 	print(": : : EXTRACTING DATA : : :")
 	# Grab all of the attributes we want
@@ -96,6 +90,9 @@ def normalize_data():
 	line = f.readline().strip('\n').split(',')
 	normalized_attributes = range(3, 18)
 	startTime = time.time()
+	negative_count = 0
+	positive_count = 0
+	print(line)
 	print(": : : NORMALIZING DATA : : :")
 
 	# Max at 0, Min at 1, Total at 2
@@ -113,7 +110,8 @@ def normalize_data():
 				normalization_data[attribute][0] = float(line[attribute])
 			if (float(line[attribute]) < normalization_data[attribute][1]):
 				normalization_data[attribute][1] = float(line[attribute])
-	print ("NORMALIZED ATTRIBUTE DATA",normalization_data)
+	print ("NORMALIZED ATTRIBUTE DATA", normalization_data)
+	print(count)
 	f = open("output.csv")
 	f0 = open("d0.csv", 'w')
 	f1 = open("d1.csv", 'w')
@@ -126,6 +124,7 @@ def normalize_data():
 	f8 = open("d8.csv", 'w')
 	f9 = open("d9.csv", 'w')
 	line_count = 0
+	line_made = {}
 	for line in f:
 		line = line.strip('\n').split(',')
 		for attribute in normalized_attributes:
@@ -138,27 +137,37 @@ def normalize_data():
 		line[2] = float(line[2])
 		line[18] = float(line[18])
 		line[19] = float(line[19])
-		if (line_count % 10 == 0):
-			f0.write(str(line).strip('[,]') + "\n")
-		elif (line_count % 10 == 1):
-			f1.write(str(line).strip('[,]') + "\n")
-		elif (line_count % 10 == 2):
-			f2.write(str(line).strip('[,]') + "\n")
-		elif (line_count % 10 == 3):
-			f3.write(str(line).strip('[,]') + "\n")
-		elif (line_count % 10 == 4):
-			f4.write(str(line).strip('[,]') + "\n")
-		elif (line_count % 10 == 5):
-			f5.write(str(line).strip('[,]') + "\n")
-		elif (line_count % 10 == 6):
-			f6.write(str(line).strip('[,]') + "\n")
-		elif (line_count % 10 == 7):
-			f7.write(str(line).strip('[,]') + "\n")
-		elif (line_count % 10 == 8):
-			f8.write(str(line).strip('[,]') + "\n")
-		elif (line_count % 10 == 9):
-			f9.write(str(line).strip('[,]') + "\n")
-		line_count += 1
+		if (False):
+			pass
+		else:
+			if ((line[19] == -1)):
+				negative_count += 1
+			else:
+				positive_count += 1
+			line_made[tuple(line)] = 1
+			if ((negative_count < 5000 and line[19] == -1) or (positive_count < 5000 and line[19] == 1)):
+				f0.write(str(line).strip('[,]') + "\n")
+			elif ((negative_count < 10000 and line[19] == -1) or (positive_count < 10000 and line[19] == 1)):
+				f1.write(str(line).strip('[,]') + "\n")
+			elif ((negative_count < 15000 and line[19] == -1) or (positive_count < 15000 and line[19] == 1)):
+				f2.write(str(line).strip('[,]') + "\n")
+			elif ((negative_count < 20000 and line[19] == -1) or (positive_count < 20000 and line[19] == 1)):
+				f3.write(str(line).strip('[,]') + "\n")
+			elif ((negative_count < 25000 and line[19] == -1) or (positive_count < 25000 and line[19] == 1)):
+				f4.write(str(line).strip('[,]') + "\n")
+			elif ((negative_count < 30000 and line[19] == -1) or (positive_count < 30000 and line[19] == 1)):
+				f5.write(str(line).strip('[,]') + "\n")
+			elif ((negative_count < 35000 and line[19] == -1) or (positive_count < 35000 and line[19] == 1)):
+				f6.write(str(line).strip('[,]') + "\n")
+			elif ((negative_count < 45000 and line[19] == -1) or (positive_count < 45000 and line[19] == 1)):
+				f7.write(str(line).strip('[,]') + "\n")
+			elif ((negative_count < 50000 and line[19] == -1) or (positive_count < 50000 and line[19] == 1)):
+				f8.write(str(line).strip('[,]') + "\n")
+			elif ((negative_count < 55000 and line[19] == -1) or (positive_count < 55000 and line[19] == 1)):
+				f9.write(str(line).strip('[,]') + "\n")
+			line_count += 1
+	print("POSITIVES", positive_count)
+	print("NEGATIVES", negative_count)
 	print(": : : FINISHED NORMALIZING : : :")
 	print("TIME: ", time.time() - startTime)
 
@@ -172,10 +181,107 @@ def create_files():
 	open("output.csv", 'a').close()
 
 
+def isfloat(value):
+	try:
+		float(value)
+		return True
+	except ValueError:
+		return False
+
+
+# gh_first_commit_created_at,[0]
+# gh_num_commits_in_push, [1]
+# git_diff_src_churn, [2]
+# gh_by_core_team_member, [3]
+# gh_diff_files_modified, [4]
+# gh_build_started_at, [5]
+# tr_status [6]
+# 9.0, 2.0, 0.0, 1.0, 95, -1
+def process_op_data():
+	f = open("op_data.csv")
+	line = f.readline().strip('\n').split(',')
+	startTime = time.time()
+	negative_count = 0
+	positive_count = 0
+	print(line)
+
+	# Max at 0, Min at 1, Total at 2
+	data = []
+	date_format = '%Y-%m-%dT%H:%M:%S'
+	for line in f:
+		line = line.strip('\n').split(',')
+		new_line = []
+		new_line.append(float(line[1])/1000)
+		new_line.append(float(line[2])/1000)
+		if(line[3] == 'TRUE'):
+			new_line.append(1.0)
+		else:
+			new_line.append(0.0)
+		# new_line.append(float(line[4])/1000)
+		if(line[0] != '' and line[5] != ''):
+			first_commit = datetime.strptime(line[0], date_format)
+			build_at = datetime.strptime(line[5], date_format)
+			delta = build_at - first_commit
+			if (delta.days < 0):
+				new_line.append(0)
+			else:
+				new_line.append(float(delta.days)/1000)
+		else:
+			new_line.append(0.0)
+		data_class = get_class(line[6])
+		if(data_class == 1):
+			positive_count +=1
+		else:
+			negative_count +=1
+		new_line.append(data_class)
+		data.append(new_line)
+
+	normalization_data = {}
+	for i in [0,1,3]:
+		normalization_data[i] = [float(data[0][i]), float(data[0][i]), float(data[0][i])]
+	for attribute in data:
+		for i in [0, 1, 3]:
+			normalization_data[i][2]+=attribute[i]
+			if(attribute[i]>normalization_data[i][0]):
+				normalization_data[i][0] = attribute[i]
+			if (attribute[i] < normalization_data[i][1]):
+				normalization_data[i][1] = attribute[i]
+	print(normalization_data)
+	for i in range(len(data)):
+		for attribute in [0,1,3]:
+			average = float((normalization_data[attribute][2]) / 10000)
+			delta = float(normalization_data[attribute][0]) - float(normalization_data[attribute][1])
+			data[i][attribute] = float(float(data[i][attribute]) - average) / delta
+	f0 = open("d0_op.csv", 'w')
+	f1 = open("d1_op.csv", 'w')
+	f2 = open("d2_op.csv", 'w')
+	f3 = open("d3_op.csv", 'w')
+	f4 = open("d4_op.csv", 'w')
+	positive_count = 0
+	negative_count = 0
+	for line in data:
+		class_att = 4
+		if ((line[4] == -1)):
+			negative_count += 1
+		else:
+			positive_count += 1
+		if ((negative_count < 1000 and line[class_att] == -1) or (positive_count < 1000 and line[class_att] == 1)):
+			f0.write(str(line).strip('[,]') + "\n")
+		elif ((negative_count < 2000 and line[class_att] == -1) or (positive_count < 2000 and line[class_att] == 1)):
+			f1.write(str(line).strip('[,]') + "\n")
+		elif ((negative_count < 3000 and line[class_att] == -1) or (positive_count < 3000 and line[class_att] == 1)):
+			f2.write(str(line).strip('[,]') + "\n")
+		elif ((negative_count < 4000 and line[class_att] == -1) or (positive_count < 4000 and line[class_att] == 1)):
+			f3.write(str(line).strip('[,]') + "\n")
+		elif ((negative_count < 5000 and line[class_att] == -1) or (positive_count < 5000 and line[class_att] == 1)):
+			f4.write(str(line).strip('[,]') + "\n")
+
+
+# Grab all of the attributes we want
 def main():
 	# create_files()
-	get_data()
-	normalize_data()
-
+	# get_data()
+	# normalize_data()
+	process_op_data()
 
 main()
